@@ -1,32 +1,34 @@
-import os
-import sys
-import okx 
-from okx.app.candle_server import CandleRule,CandleServer
-from okx import OkxLite
+from okx.app import OkxSWAP
+from okx.app.utils import eprint
+import time 
 
-if __name__ == 'download_candle_history.py':
-    # 币币交易：SPOT；永续合约：SWAP；交割合约：FUTURES；期权：OPTION
-    instType = 'SWAP' # 永续合约，默认规则
-    candleServer = CandleServer(
-        instType=instType,
-        rule=CandleRule,
-        proxies={}, # 使用http和https代理，proxies={'http':'xxxxx','https:':'xxxxx'}，通requests中的proxies参数规则相同
-        proxy_host=None,    # 转发：需搭建转发服务器，可参考：https://github.com/pyted/okx_resender
-    )
-    # 下载2024-01-01 ~ 2024-01-02 全部instType的历史K线
-    candleServer.download_candles_by_date(
-        start='2024-01-01',
-        end='2024-01-02',
-        replace=True,  # 如果历史K线存在则替换
-    )
-    okxlite = OkxLite()
-    # 读取指定产品的历史K线
-    candle = okxlite.load_candle_by_date(
-        instType='SWAP',
-        symbol='BTC-USDT-SWAP',
-        start='2024-01-01',
-        end='2024-01-02',
-        bar='1m',
-        timezone='Asia/Shanghai',
-    )
-    candle
+# 永续合约行情不需要秘钥
+# 使用http和https代理，proxies={'http':'xxxxx','https:':'xxxxx'}，与requests中的proxies参数规则相同
+proxies = {}
+# 转发：需搭建转发服务器，可参考：https://github.com/pyted/okx_resender
+proxy_host = None
+
+# okxSPOT.market 等同于 marketSPOT
+okxSWAP = OkxSWAP(
+    key=key, secret=secret, passphrase=passphrase, proxies=proxies, proxy_host=proxy_host,
+)
+market = okxSWAP.market
+#history_candle_latest = market.get_history_candle_latest(
+#    instId='BTC-USDT-SWAP',
+#    length=10,
+#    bar='1m'
+#)
+timestamp = time.time()
+local_start_time = time.localtime(timestamp)
+local_end_time = time.localtime(timestamp-10)
+local_start_time_str = time.strftime('%Y-%m-%d %H:%M:%S', local_start_time)
+local_end_time_str = time.strftime('%Y-%m-%d %H:%M:%S', local_end_time)
+print(f"本地时间: {local_start_time_str} => {local_end_time_str}")
+candle = market.get_history_candle(
+    instId='BTC-USDT-SWAP',
+    start=local_start_time_str,
+    end=local_end_time_str,
+    bar='1m',
+)['data']
+df = market.candle_to_df(candle)
+print(df.head())
