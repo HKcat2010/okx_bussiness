@@ -1,17 +1,17 @@
-import os
-import sys
-#root_path = os.path.dirname(os.path.abspath(__file__))
-#sys.path.appeclearnd(root_path)
-import okx # 导入行情数据
+from okx.app import OkxSWAP
+from okx.app.utils import eprint
+# 永续合约行情不需要秘钥
 
-if __name__ == '__main__':
-    # 行情数据无需添加key、secret与passphrase
-    key = ''
-    secret = ''
-    passphrase = ''
-    flag = '0'  # flag = '0' 实盘 flag = '1' 模拟盘
+# 使用http和https代理，proxies={'http':'xxxxx','https:':'xxxxx'}，与requests中的proxies参数规则相同
+proxies = {}
+# 转发：需搭建转发服务器，可参考：https://github.com/pyted/okx_resender
+proxy_host = None
 
-    market = okx.Market()
-    # 获取现货交易BTC-USDT的行情信息
-    result = market.get_ticker(instId='BTC-USDT')
-    print(sys.path)
+# okxSPOT.market 等同于 marketSPOT
+okxSWAP = OkxSWAP(
+    key=key, secret=secret, passphrase=passphrase, proxies=proxies, proxy_host=proxy_host,
+)
+market = okxSWAP.market
+# 如果有挂单或持仓，会提示“设置持仓方式为双向持仓失败”，如果你的持仓模式已经是双向持仓，可以忽略这个警告ticker_result = market.get_ticker(instId='BTC-USDT-SWAP')
+ticker_result = market.get_ticker(instId='BTC-USDT-SWAP')
+eprint(ticker_result)
