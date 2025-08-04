@@ -36,7 +36,7 @@ def get_15m_kdj(user,n=9, m1=3, m2=3):
     })
     kdj_result = kdj.calculate_kdj(kdj_data, n, m1, m2)
     kdj_result['ts'] = candle_arr['ts']
-    print(kdj_result.tail(1))
+    #print(kdj_result.tail(1))
     return kdj_result.tail(1)
 
 def get_1m_kdj(user,n=9, m1=3, m2=3):
@@ -70,5 +70,5 @@ def get_1m_kdj(user,n=9, m1=3, m2=3):
     })
     kdj_result = kdj.calculate_kdj(kdj_data, n, m1, m2)
     kdj_result['ts'] = candle_arr['ts']
-    print(kdj_result.tail(1))
+    #print(kdj_result.tail(1))
     return kdj_result.tail(1)
