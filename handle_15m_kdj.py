@@ -32,7 +32,6 @@ candle = market.update_history_candle(
     bar='15m',
 )['data']
 df = market.candle_to_df(candle)
-print(df.head(1))
 candle_arr = df.to_dict()
 close_price = candle_arr['c']
 high_price = candle_arr['h']
@@ -44,6 +43,5 @@ kdj_data = pd.DataFrame({
 })
 kdj_result = kdj.calculate_kdj(kdj_data, n=9, m1=3, m2=3)
 kdj_result['ts'] = candle_arr['ts']
-pd.set_option('display.max_rows', None)  # 显示所有行
-print(kdj_result)
+print(kdj_result.tail(1))
 
