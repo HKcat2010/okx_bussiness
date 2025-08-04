@@ -3,21 +3,17 @@ from okx.app.utils import eprint
 import pandas as pd
 import time
 import kdj
+import user
 
-# 永续合约行情不需要秘钥
-
-# 使用http和https代理，proxies={'http':'xxxxx','https:':'xxxxx'}，与requests中的proxies参数规则相同
-proxies = {}
-# 转发：需搭建转发服务器，可参考：https://github.com/pyted/okx_resender
-proxy_host = None
-
-# okxSPOT.market 等同于 marketSPOT
-okxSWAP = OkxSWAP(
-    key=key, secret=secret, passphrase=passphrase, proxies=proxies, proxy_host=proxy_host,
-)
-market = okxSWAP.market
-
-def get_15m_kdj():
+def get_15m_kdj(user,n=9, m1=3, m2=3):
+    # 永续合约行情不需要秘钥
+    # 使用http和https代理，proxies={'http':'xxxxx','https:':'xxxxx'}，与requests中的proxies参数规则相同
+    # 转发：需搭建转发服务器，可参考：https://github.com/pyted/okx_resender
+    # okxSPOT.market 等同于 marketSPOT
+    okxSWAP = OkxSWAP(
+        key=user.key, secret=user.secret, passphrase=user.passphrase, proxies={}, proxy_host=None,
+    )
+    market = okxSWAP.market
     timestamp = time.time()
     local_time = time.localtime(timestamp)
     local_time_str = time.strftime('%Y-%m-%d %H:%M:%S', local_time)
@@ -38,12 +34,20 @@ def get_15m_kdj():
         'low': low_price,
         'close': close_price
     })
-    kdj_result = kdj.calculate_kdj(kdj_data, n=9, m1=3, m2=3)
+    kdj_result = kdj.calculate_kdj(kdj_data, n, m1, m2)
     kdj_result['ts'] = candle_arr['ts']
     print(kdj_result.tail(1))
     return kdj_result.tail(1)
 
-def get_1m_kdj():
+def get_1m_kdj(user,n=9, m1=3, m2=3):
+    # 永续合约行情不需要秘钥
+    # 使用http和https代理，proxies={'http':'xxxxx','https:':'xxxxx'}，与requests中的proxies参数规则相同
+    # 转发：需搭建转发服务器，可参考：https://github.com/pyted/okx_resender
+    # okxSPOT.market 等同于 marketSPOT
+    okxSWAP = OkxSWAP(
+        key=user.key, secret=user.secret, passphrase=user.passphrase, proxies={}, proxy_host=None,
+    )
+    market = okxSWAP.market
     timestamp = time.time()
     local_time = time.localtime(timestamp)
     local_time_str = time.strftime('%Y-%m-%d %H:%M:%S', local_time)
@@ -64,7 +68,7 @@ def get_1m_kdj():
         'low': low_price,
         'close': close_price
     })
-    kdj_result = kdj.calculate_kdj(kdj_data, n=9, m1=3, m2=3)
+    kdj_result = kdj.calculate_kdj(kdj_data, n, m1, m2)
     kdj_result['ts'] = candle_arr['ts']
     print(kdj_result.tail(1))
     return kdj_result.tail(1)
