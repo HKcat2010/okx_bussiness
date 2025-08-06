@@ -1,7 +1,7 @@
 from okx.app import OkxSWAP
 from okx.app.utils import eprint
 import user
-import check_bs
+import get_kdj
 import time
 
 # 永续合约行情不需要秘钥
@@ -18,12 +18,12 @@ while True:
     #print(f"本地时间: {local_time_str}")
     
     # 获取1分钟KDJ
-    kdj_1m = check_bs.get_1m_kdj(user, n=9, m1=3, m2=3)
+    kdj_1m = get_kdj.get_1m_kdj(user, n=9, m1=3, m2=3)
 
     # 获取15分钟KDJ
     if(count % 15 == 0):
         count = 0
-        kdj_15m = check_bs.get_15m_kdj(user, n=9, m1=3, m2=3)
+        kdj_15m = get_kdj.get_15m_kdj(user, n=9, m1=3, m2=3)
         #print("\nget 15min kdj \n" + kdj_15m.to_string() + "\n1min kdj \n" + kdj_1m.to_string())
 
         #刷新 上一个 15 kdj
